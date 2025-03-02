@@ -6,14 +6,23 @@ const addSchema = Joi.object({
   text: Joi.string().required(),
 });
 
-const articleShema = new Schema({
-  title: String,
-  text: String,
-});
+const articleShema = new Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+    text: {
+      type: String,
+      required: true,
+    },
+  },
+  { versionKey: false, timestamps: true }
+);
 
 const Article = model("article", articleShema);
 
 module.exports = {
-    Article,
-    addSchema
-}
+  Article,
+  addSchema,
+};
