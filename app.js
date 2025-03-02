@@ -4,6 +4,7 @@ const morgan = require("morgan");
 require("dotenv").config();
 
 const articlesRouter = require("./routes/api/articles");
+const authRouter = require("./routes/api/auth");
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use(morgan("tiny"));
 
 app.use("/api/articles", articlesRouter);
+app.use("/api/auth", authRouter);
 
 app.use((req, res) => {
   res.status(400).json({
