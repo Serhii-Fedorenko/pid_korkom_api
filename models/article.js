@@ -20,9 +20,13 @@ const articleShema = new Schema(
   { versionKey: false, timestamps: true }
 );
 
+const schemas = {
+  addSchema
+}
+
 const Article = model("article", articleShema);
 
 module.exports = {
   Article,
-  addSchema,
+  schemas,
 };
