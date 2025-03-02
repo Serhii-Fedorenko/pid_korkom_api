@@ -21,13 +21,19 @@ const userSchema = new Schema(
   { versionKey: false, timestamps: true }
 );
 
-const authSchema = Joi.object({
+const registerSchema = Joi.object({
+  name: Joi.string().required(),
+  password: Joi.string().min(6).required(),
+});
+
+const loginSchema = Joi.object({
   name: Joi.string().required(),
   password: Joi.string().min(6).required(),
 });
 
 const schemas = {
-  authSchema,
+  registerSchema,
+  loginSchema,
 };
 
 const User = model("user", userSchema);
