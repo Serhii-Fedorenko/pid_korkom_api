@@ -1,10 +1,13 @@
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const { User } = require("../models/user");
 const { HttpError, ctrlWrapper } = require("../utils");
 
+const { SECRET_KEY } = process.env;
+
 const register = async (req, res) => {
-  const { name, password } = req.body;
-  const user = await User.findOne({ name });
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
 
   if (user) {
     throw HttpError(409, "Name already in use");
@@ -19,6 +22,31 @@ const register = async (req, res) => {
   });
 };
 
+const login = async (req, res) => {
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw HttpError(401, "Email or password invalid");
+  }
+
+  const passwordCompare = bcrypt.compare(password, user.password);
+
+  if (!passwordCompare) {
+    throw HttpError(401, "Email or password invalid");
+  }
+
+  const payload = {
+    id: user._id,
+  };
+
+  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "12h" });
+  await User.findByIdAndUpdate(user._id, { token });
+
+  res.json({ token });
+};
+
 module.exports = {
   register: ctrlWrapper(register),
+  login: ctrlWrapper(login),
 };
