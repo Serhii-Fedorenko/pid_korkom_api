@@ -5,6 +5,7 @@ require("dotenv").config();
 
 const articlesRouter = require("./routes/api/articles");
 const authRouter = require("./routes/api/auth");
+const adminRouter = require('./routes/api/admin')
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(morgan("tiny"));
 
 app.use("/api/articles", articlesRouter);
 app.use("/api/auth", authRouter);
+app.use('/api/admin', adminRouter)
 
 app.use((req, res) => {
   res.status(400).json({
