@@ -1,4 +1,4 @@
-const { Article, addSchema } = require("../models/article");
+const { Article, schemas } = require("../models/article");
 const { HttpError, ctrlWrapper } = require("../utils");
 
 const getAll = async (req, res) => {
@@ -16,7 +16,7 @@ const getById = async (req, res) => {
 };
 
 const add = async (req, res) => {
-  const { error } = addSchema.validate(req.body);
+  const { error } = schemas.addSchema.validate(req.body);
   if (error) {
     throw HttpError(400, error.message);
   }
