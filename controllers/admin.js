@@ -17,7 +17,6 @@ const getById = async (req, res) => {
 };
 
 const add = async (req, res) => {
-  console.log("adding");
   const { error } = schemas.addSchema.validate(req.body);
 
   if (error) {
