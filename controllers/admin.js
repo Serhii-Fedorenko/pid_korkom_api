@@ -1,5 +1,6 @@
-const { Article, addSchema } = require("../models/article");
-const { HttpError, ctrlWrapper } = require("../utils");
+const { Article, schemas } = require("../models/article");
+const { HttpError, ctrlWrapper, cloudinary } = require("../utils");
+const fs = require("fs/promises");
 
 const getAll = async (req, res) => {
   const result = await Article.find();
@@ -16,11 +17,25 @@ const getById = async (req, res) => {
 };
 
 const add = async (req, res) => {
-  const { error } = addSchema.validate(req.body);
+  console.log("adding");
+  const { error } = schemas.addSchema.validate(req.body);
+
   if (error) {
     throw HttpError(400, error.message);
   }
-  const result = await Article.create(req.body);
+
+  let imageUrl = null;
+
+  if (req.file) {
+    const { path: tempUpload } = req.file;
+    const result = await cloudinary.uploader.upload(tempUpload, {
+      folder: "articles",
+    });
+    imageUrl = result.secure_url;
+    await fs.unlink(tempUpload);
+  }
+
+  const result = await Article.create({ ...req.body, image: imageUrl });
   res.status(201).json(result);
 };
 

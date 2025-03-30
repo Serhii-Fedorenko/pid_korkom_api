@@ -1,7 +1,7 @@
 const express = require("express");
 
-const ctrl = require("../../controllers/articles");
-const { isValidId, validateBody } = require("../../middlewares");
+const ctrl = require("../../controllers/admin");
+const { isValidId, validateBody, upload } = require("../../middlewares");
 const { schemas } = require("../../models/article");
 
 const router = express.Router();
@@ -10,7 +10,12 @@ router.get("/", ctrl.getAll);
 
 router.get("/:id", isValidId, ctrl.getById);
 
-router.post("/", validateBody(schemas.addSchema), ctrl.add);
+router.post(
+  "/",
+  upload.single("image"),
+  validateBody(schemas.addSchema),
+  ctrl.add
+);
 
 router.put("/:id", isValidId, validateBody(schemas.addSchema), ctrl.updateById);
 
