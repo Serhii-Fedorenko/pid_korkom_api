@@ -17,7 +17,13 @@ router.post(
   ctrl.add
 );
 
-router.put("/:id", isValidId, validateBody(schemas.addSchema), ctrl.updateById);
+router.put(
+  "/:id",
+  isValidId,
+  upload.single("image"),
+  validateBody(schemas.addSchema),
+  ctrl.updateById
+);
 
 router.delete("/:id", isValidId, ctrl.deleteById);
 

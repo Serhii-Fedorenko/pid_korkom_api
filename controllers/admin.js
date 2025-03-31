@@ -17,7 +17,6 @@ const getById = async (req, res) => {
 };
 
 const add = async (req, res) => {
-  console.log("adding");
   const { error } = schemas.addSchema.validate(req.body);
 
   if (error) {
@@ -41,7 +40,26 @@ const add = async (req, res) => {
 
 const updateById = async (req, res) => {
   const { id } = req.params;
-  const result = await Article.findByIdAndUpdate(id, req.body, { new: true });
+  const { error } = schemas.addSchema.validate(req.body);
+
+  if (error) {
+    throw HttpError(400, error.message);
+  }
+
+  let imageUrl = null;
+
+  if (req.file) {
+    const { path: tempUpload } = req.file;
+    const result = await cloudinary.uploader.upload(tempUpload, {
+      folder: "articles",
+    });
+    imageUrl = result.secure_url;
+    await fs.unlink(tempUpload);
+  }
+
+  const updateData = imageUrl ? { ...req.body, image: imageUrl } : req.body;
+
+  const result = await Article.findByIdAndUpdate(id, updateData, { new: true });
   if (!result) {
     throw HttpError(404, "Not found");
   }
