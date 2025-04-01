@@ -29,6 +29,7 @@ const add = async (req, res) => {
     const { path: tempUpload } = req.file;
     const result = await cloudinary.uploader.upload(tempUpload, {
       folder: "articles",
+      transformation: [{ quality: "auto", fetch_format: "auto" }],
     });
     imageUrl = result.secure_url;
     await fs.unlink(tempUpload);
@@ -52,6 +53,7 @@ const updateById = async (req, res) => {
     const { path: tempUpload } = req.file;
     const result = await cloudinary.uploader.upload(tempUpload, {
       folder: "articles",
+      transformation: [{ quality: "auto", fetch_format: "auto" }],
     });
     imageUrl = result.secure_url;
     await fs.unlink(tempUpload);
